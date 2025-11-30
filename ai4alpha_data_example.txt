@@ -1,0 +1,276 @@
+我直接帮你把这个 idea「整理成一页讲清楚」，这样你自己看也清晰，将来写 deck / 申请 / 写文档都能复用。
+
+1. 你想做的东西，一句话版
+
+把“新闻 + 公告/监管披露 + 行情数据”按小时合成一条条“事件时间线”，既让人能看懂，也能直接被量化模型 & LLM agent 当特征用。
+
+也就是说：
+
+不再是“零散的单条新闻/单个财报/一堆 K 线”，
+
+而是 对每只 ticker、每个小时：
+
+“这一小时究竟发生了什么？主要驱动是什么？证据来自哪些来源？对价格/量有什么影响？”
+
+2. 整体流程（pipeline）分步骤
+
+我用你脑子里的设计来整理成清晰步骤：
+
+Step 0：选定 universe & 时间粒度
+
+资产：美股 / 加股 / crypto（先少量 ticker 再扩展）
+
+粒度：**1 小时（或 2 小时）**为一个时间桶 time_bucket
+例如：09:30–10:30，10:30–11:30 …
+
+Step 1：数据采集（多源）
+
+对每个时间桶、每只 ticker，收集：
+
+市场数据（Market data）
+
+OHLCV / 价格、成交量
+
+这一个小时的最高 / 最低 / 收盘
+
+相对于前一小时 / 当天开盘 / 前收的变化
+
+是否出现 “price jump / volume spike”
+
+新闻 / 媒体（News）
+
+主流新闻源、RSS、公司新闻稿、crypto 新闻网站……
+
+按 ticker 做 entity linking（哪条新闻和这只股票/币相关）
+
+公告 / 监管披露（Filings）
+
+美股：EDGAR 10-K/10-Q/8-K 等
+
+加拿大：SEDAR+ 文件
+
+公司自家公告、PR、链上治理提案（对 crypto）
+
+（可选）社交&其他信号
+
+Twitter/X、Reddit、论坛等（后期再加）
+
+关键点是：
+
+同一个时间桶内，把所有和该 ticker 相关的原始数据条目先聚合起来。
+
+Step 2：LLM / 模型做信息抽取 & 结构化
+
+对「某个 ticker 在这一小时内的所有原始文本 + 行情摘要」丢给你的 自部署 LLM + agent pipeline，做：
+
+事件抽取（Event extraction）
+
+识别这一小时重要事件：
+
+例如：earnings release, guidance update, M&A rumor, regulatory approval, product launch, hack, listing, delisting, lawsuit, macro news related 等
+
+每个事件输出标准字段：
+
+event_type（财报/并购/监管/技术问题/宏观等）
+
+source_type（news / filing / PR / tweet…）
+
+source_ids（对应新闻/文件的 ID 列表）
+
+sentiment / impact_direction（正/负/中性）
+
+novelty_score（是否新信息 / 旧闻重复）
+
+confidence（模型置信度）
+
+价格对齐（Price alignment）
+
+比较该小时内的价格 & 成交量变化：
+
+price_change_pct
+
+volume_zscore 或相对均值的放大倍数
+
+让 agent/LLM 去判断：
+
+「这些事件是否大概率解释了价格/量的异常？」
+
+输出 explains_move = yes/no/maybe 等标记
+
+自然语言总结（Human readable summary）
+
+为该 ticker & 这一小时生成一段简洁 summary，例如：
+
+“Between 10:30–11:30, AAPL rose +2.3% with volume 1.8× average. The move was mainly driven by multiple positive news reports on stronger-than-expected iPhone pre-orders and a bullish analyst rating upgrade. No new regulatory filings were detected.”
+
+同时附带 citation 信息，告诉用户 “这一段总结背后引用了哪些新闻/filings”。
+
+Step 3：写入统一 schema 的“小时级事件表”
+
+对每个 ticker、每个小时，落地成一行结构化记录，大概像：
+
+字段	含义
+ticker	AAPL / TSLA / BTC-USD …
+time_bucket_start	2025-11-29 10:00:00
+time_bucket_end	2025-11-29 11:00:00
+price_open / price_close / high / low	该小时内行情
+price_change_pct	相对前一小时或前收的涨跌幅
+volume / volume_relative	成交量及放大倍数
+num_news	这一小时相关新闻条数
+num_filings	这一小时新披露文件数
+main_event_types	["earnings", "analyst_upgrade"]
+sentiment_score	-1 ~ 1 范围情绪分数
+impact_direction	"positive" / "negative" / "mixed"
+explains_move	"yes" / "no" / "uncertain"
+summary_text	1–3 句话自然语言总结
+sources	指向具体 news / filings 的 ID 列表
+llm_version	使用的模型版本，便于回溯
+quality_flags	是否有数据缺失/冲突等标记
+
+这样：
+
+量化/回测 直接把这张大表当 feature table 用。
+
+LLM/agent 通过 MCP / API 查询这张表，而不是重新浏览全网。
+
+3. 用一个具体 ticker 举例（比如 AAPL）
+
+假设今天是某天美股盘中，关注 AAPL。
+
+🕒 时间桶：10:30–11:30（纽约时间）
+
+在这一小时内，你的系统抓到：
+
+价格数据
+
+10:30 开盘价：$190.00
+
+11:30 收盘价：$194.37
+
+涨幅：+2.3%
+
+成交量：这一小时是过去 30 天同一时间段平均的 1.8×
+
+新闻
+
+新闻 1：Major tech blog 报道
+
+“Early reviews suggest strong pre-order demand for the new iPhone model in China and the U.S.”
+
+新闻 2：某投行发布报告
+
+“XYZ Securities raises Apple’s target price from $200 to $220, reiterating ‘Buy’ rating.”
+
+新闻 3：小媒体重复报道 iPhone 预售好，内容高度重复、质量一般。
+
+公告 / 披露
+
+无新 8-K / 10-Q / 10-K，SEDAR 无更新。
+
+LLM / Agent 处理后得到：
+a) 事件抽取结果
+
+提取两个主要事件：
+
+事件 A：
+
+event_type: "product_demand_news"
+
+source_type: "news"
+
+sentiment: +0.7
+
+novelty: 高（这是当天首次大面积报道）
+
+related_to: iPhone 预售
+
+事件 B：
+
+event_type: "analyst_rating_change"
+
+source_type: "research_note"
+
+sentiment: +0.8
+
+novelty: 中（当天首次）
+
+同时自动丢弃 / 降权 新闻 3（内容几乎重复，仅作为 duplicate_news = true）。
+
+b) 价格对齐
+
+price_change_pct: +2.3%
+
+volume_relative: 1.8×
+
+Agent 判断：
+
+「与过去类似事件相比，这种“预售强劲 + 评级上调”的组合在 1 小时内带来 1–3% 涨幅是比较典型的」
+
+输出 explains_move = "yes"，并给出 move_explained_confidence = 0.78。
+
+c) 文本 summary
+
+summary_text 可能是：
+
+10:30–11:30 (AAPL)
+AAPL rose +2.3% with volume around 1.8× its 30-day average.
+The move was primarily driven by positive news on strong iPhone pre-order demand and an analyst upgrade that raised the target price from $200 to $220 while maintaining a “Buy” rating.
+No new SEC or SEDAR filings were published during this hour.
+
+同时，sources 字段里会列出：
+
+[
+  {
+    "type": "news",
+    "id": "news_20251129_1035_001",
+    "url": "https://example.com/article/iphone-preorders"
+  },
+  {
+    "type": "research_note",
+    "id": "note_20251129_1102_007",
+    "url": "https://example.com/article/analyst-upgrade"
+  }
+]
+
+最终存入这一条“小时记录”：
+{
+  "ticker": "AAPL",
+  "time_bucket_start": "2025-11-29T10:30:00-05:00",
+  "time_bucket_end":   "2025-11-29T11:30:00-05:00",
+  "price_open": 190.00,
+  "price_close": 194.37,
+  "price_change_pct": 0.023,
+  "volume": 1_200_000,
+  "volume_relative": 1.8,
+  "num_news": 3,
+  "num_filings": 0,
+  "main_event_types": ["product_demand_news", "analyst_rating_change"],
+  "sentiment_score": 0.75,
+  "impact_direction": "positive",
+  "explains_move": "yes",
+  "move_explained_confidence": 0.78,
+  "summary_text": "AAPL rose +2.3% ... (略)",
+  "sources": [...],
+  "llm_version": "fin-llm-v0.3",
+  "quality_flags": []
+}
+
+4. 这条“时间线记录”怎么被用？
+对人类用户：
+
+研究员打开 AAPL 的 timeline：
+一眼看到：今天每个小时发生了什么，哪一段涨跌有“解释”，哪一段是“无解波动”。
+
+对量化：
+
+这整张小时表是一个巨大的 feature matrix：
+
+可以做 event-study 回测（比如“analyst upgrade + positive sentiment + volume spike”的后续表现）
+
+可以直接输入到 XGBoost / LSTM / Transformer / RL 策略中作为状态特征。
+
+对 LLM / agent：
+
+MCP / API 调用：
+
+get_hourly_events(ticker="AAPL", from="2025-11-01", to="2025-11-30")
