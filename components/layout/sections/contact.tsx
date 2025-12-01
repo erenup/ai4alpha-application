@@ -69,8 +69,8 @@ export const ContactSection = () => {
             <h2 className="text-3xl md:text-4xl font-bold">Get In Touch</h2>
           </div>
           <p className="mb-8 text-muted-foreground lg:w-5/6">
-            Interested in AI4ALPHA for your quantitative research or trading 
-            infrastructure? Reach out to discuss API access, custom integrations,
+            Interested in AI4ALPHA for your research or data infrastructure? 
+            Reach out to discuss API access, custom integrations,
             or partnership opportunities.
           </p>
 
@@ -113,7 +113,7 @@ export const ContactSection = () => {
                       <FormItem className="w-full">
                         <FormLabel>First Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Leopoldo" {...field} />
+                          <Input placeholder="First name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -126,7 +126,7 @@ export const ContactSection = () => {
                       <FormItem className="w-full">
                         <FormLabel>Last Name</FormLabel>
                         <FormControl>
-                          <Input placeholder="Miranda" {...field} />
+                          <Input placeholder="Last name" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -144,7 +144,7 @@ export const ContactSection = () => {
                         <FormControl>
                           <Input
                             type="email"
-                            placeholder="leomirandadev@gmail.com"
+                            placeholder="you@example.com"
                             {...field}
                           />
                         </FormControl>

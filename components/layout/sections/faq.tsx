@@ -14,7 +14,7 @@ interface FAQProps {
 const FAQList: FAQProps[] = [
   {
     question: "What data sources do you cover?",
-    answer: "We aggregate news from major financial outlets, SEC filings (10-K, 10-Q, 8-K), SEDAR+ filings for Canadian equities, company press releases, and real-time market data (OHLCV, volume).",
+    answer: "We aggregate news from major financial outlets, SEC filings (10-K, 10-Q, 8-K), SEDAR+ filings for Canadian equities, company press releases, and real-time market data (OHLCV).",
     value: "item-1",
   },
   {
@@ -24,7 +24,7 @@ const FAQList: FAQProps[] = [
   },
   {
     question: "How does the AI extraction work?",
-    answer: "Our LLM pipeline processes raw text to extract event type, sentiment score, novelty score, and determines if the events explain observed price movements. Each extraction includes confidence scores and source citations.",
+    answer: "Our LLM pipeline processes raw text to extract event type, sentiment, and determines if the events explain observed price movements. Each extraction includes confidence scores and source citations.",
     value: "item-3",
   },
   {

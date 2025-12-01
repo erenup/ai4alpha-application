@@ -1,5 +1,5 @@
 import { Separator } from "@/components/ui/separator";
-import { ChevronsDownIcon } from "lucide-react";
+import { ChevronsUpIcon } from "lucide-react";
 import Link from "next/link";
 
 export const FooterSection = () => {
@@ -9,7 +9,7 @@ export const FooterSection = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-12 gap-y-8">
           <div className="col-span-full xl:col-span-2">
             <Link href="#" className="flex font-bold items-center">
-              <ChevronsDownIcon className="w-9 h-9 mr-2 bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg border border-secondary" />
+              <ChevronsUpIcon className="w-9 h-9 mr-2 bg-gradient-to-tr from-primary via-primary/70 to-primary rounded-lg border border-secondary" />
 
               <h3 className="text-2xl">AI4ALPHA</h3>
             </Link>
@@ -24,8 +24,8 @@ export const FooterSection = () => {
             </div>
 
             <div>
-              <Link href="#benefits" className="opacity-60 hover:opacity-100">
-                Benefits
+              <Link href="#why-ai4alpha" className="opacity-60 hover:opacity-100">
+                Why AI4ALPHA
               </Link>
             </div>
 
@@ -95,10 +95,14 @@ export const FooterSection = () => {
         </div>
 
         <Separator className="my-6" />
-        <section className="">
+        <section className="space-y-2">
           <h3 className="">
-            &copy; 2024 AI4ALPHA. All rights reserved.
+            &copy; 2025 AI4ALPHA. All rights reserved.
           </h3>
+          <p className="text-sm text-muted-foreground">
+            AI4ALPHA provides information services only. We do not provide investment advice or recommendations. 
+            All data is for informational purposes and should not be considered as financial guidance.
+          </p>
         </section>
       </div>
     </footer>

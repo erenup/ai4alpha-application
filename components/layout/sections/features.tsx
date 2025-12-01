@@ -25,19 +25,19 @@ const featureList: FeaturesProps[] = [
     icon: "Brain",
     title: "AI-Powered Extraction",
     description:
-      "LLM pipeline extracts event type, sentiment, novelty score, and explains price movements automatically.",
+      "LLM pipeline extracts event type, sentiment, and explains price movements with source citations.",
   },
   {
     icon: "BarChart3",
-    title: "Quant-Ready Features",
+    title: "1000+ Tickers Coverage",
     description:
-      "Structured output ready for XGBoost, LSTM, or any ML pipeline. Every record is a feature vector.",
+      "Cross-market coverage of US equities, Canadian equities, and crypto with hourly structured data.",
   },
   {
     icon: "Zap",
     title: "Real-Time Processing",
     description:
-      "24/7 continuous processing of market events with sub-hour latency for live trading strategies.",
+      "Continuous processing of market events with full source citations for verification and validation.",
   },
   {
     icon: "Code",
@@ -55,12 +55,12 @@ export const FeaturesSection = () => {
       </h2>
 
       <h2 className="text-3xl md:text-4xl text-center font-bold mb-4">
-        Unified Financial Event Intelligence
+        Structured Market Event Data
       </h2>
 
       <h3 className="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-8">
-        Transform scattered financial data into actionable hourly event timelines.
-        Built for quantitative research, algorithmic trading, and AI agents.
+        Aggregate scattered market information into structured hourly event timelines.
+        Built for research, analysis, and AI agents.
       </h3>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">

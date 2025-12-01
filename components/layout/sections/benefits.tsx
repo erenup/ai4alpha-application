@@ -1,6 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { icons } from "lucide-react";
+import Image from "next/image";
 
 interface BenefitsProps {
   icon: string;
@@ -11,43 +12,43 @@ interface BenefitsProps {
 const benefitList: BenefitsProps[] = [
   {
     icon: "TrendingUp",
-    title: "Alpha Generation",
+    title: "Event Detection",
     description:
-      "Identify market-moving events before they're priced in. Get structured signals for your trading strategies.",
+      "Identify market-moving events as they happen. Get structured data with full source citations.",
   },
   {
     icon: "LineChart",
-    title: "Backtesting Ready",
+    title: "Historical Data",
     description:
-      "Historical event data with price alignment. Perfect for event-study backtests and strategy validation.",
+      "Historical event data with price alignment. Perfect for research, backtesting, and analysis.",
   },
   {
     icon: "Bot",
     title: "LLM Agent Compatible",
     description:
-      "Your AI agents can query: 'What drove AAPL's 2% move?' and get structured, citable answers instantly.",
+      "Your AI agents can query: 'What happened to AAPL today?' and get structured, citable answers instantly.",
   },
   {
     icon: "Sparkle",
     title: "Noise Reduction",
     description:
-      "Filter duplicate news, identify novel information, and focus on events that actually matter.",
+      "Filter duplicate news, identify key information, and focus on events that actually matter.",
   },
 ];
 
 export const BenefitsSection = () => {
   return (
-    <section id="benefits" className="container py-24 sm:py-32">
+    <section id="why-ai4alpha" className="container py-24 sm:py-32">
       <div className="grid lg:grid-cols-2 place-items-center lg:gap-24">
         <div>
-          <h2 className="text-lg text-primary mb-2 tracking-wider">Benefits</h2>
+          <h2 className="text-lg text-primary mb-2 tracking-wider">Why AI4ALPHA</h2>
 
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Your Edge in Financial Markets
+            Your Edge in Market Data
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
             Stop manually parsing news and filings. Get structured event data 
-            that explains market movements and powers your quantitative strategies.
+            that explains market movements and powers your research.
           </p>
         </div>
 
@@ -79,6 +80,16 @@ export const BenefitsSection = () => {
             </Card>
           ))}
         </div>
+      </div>
+
+      <div className="mt-16">
+        <Image
+          src="/appl_machine.jpeg"
+          alt="Machine consumption structured financial data"
+          width={1200}
+          height={600}
+          className="w-full rounded-lg border border-secondary"
+        />
       </div>
     </section>
   );
