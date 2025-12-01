@@ -52,7 +52,7 @@ export const ContactSection = () => {
     const { firstName, lastName, email, subject, message } = values;
     console.log(values);
 
-    const mailToLink = `mailto:contact@ai4alpha.com?subject=${subject}&body=Hello I am ${firstName} ${lastName}, my Email is ${email}. %0D%0A${message}`;
+    const mailToLink = `mailto:contact@ai4alpha.ca?subject=${subject}&body=Hello I am ${firstName} ${lastName}, my Email is ${email}. %0D%0A${message}`;
 
     window.location.href = mailToLink;
   }
@@ -81,7 +81,7 @@ export const ContactSection = () => {
                 <div className="font-bold">Email</div>
               </div>
 
-              <div>contact@ai4alpha.com</div>
+              <div>contact@ai4alpha.ca</div>
             </div>
 
             <div>

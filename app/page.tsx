@@ -10,7 +10,7 @@ export const metadata = {
   description: "Transform news, SEC filings, and market data into structured hourly event summaries with source citations. Real-time and historical data for quantitative research and LLM agents.",
   openGraph: {
     type: "website",
-    url: "https://ai4alpha.com",
+    url: "https://ai4alpha.ca",
     title: "AI4ALPHA - Real-Time Financial Event Timeline Intelligence",
     description: "Transform news, SEC filings, and market data into structured hourly event summaries with source citations. Real-time and historical data for quantitative research and LLM agents.",
     images: [
